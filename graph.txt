@@ -35,33 +35,47 @@ class directedGraph{
     adj[u].remove(v);
   }
   
-  vector<int> BFSofGraph(int startVertex){
-    int n = adj.size();
-    vector<bool> visited(n,0);
+  void graphDFS(int startVertex,vector<int> &ans,vector<bool> &vis){
+    vis[startVertex] = 1;
     
-vector<int> ans;
-
-queue<int> q;
-q.push(startVertex);
-while(!q.empty()){
-  int v = q.front();
-  //cout << adj[0].front() << endl;
-  ans.push_back(v);
-  
-  visited[v] = 1;
-  q.pop();
-  
-  for(auto x : adj[v]){
-   if(!visited[x]){
-     visited[x] = 1;
-     q.push(x);
-   }
+    ans.push_back(startVertex);
+    
+    for(auto x: adj[startVertex]){
+      if(!vis[x]){
+        graphDFS(x,ans,vis);
+      }
+    }
+    
   }
+vector<int> graphBFS(int sval){
+  queue<int> q;
+  q.push(sval);
+  int n = adj.size();
+  vector<int> ans;
+  vector<bool> visited(n,0);
+  while(!q.empty()){
+    int v = q.front();
+    visited[v] = 1;
+    ans.push_back(v);
+    q.pop();
+    
+    for(int x: adj[v]){
+      if(!visited[x]){
+        q.push(x);
+        visited[x]=1;
+      }
+    }
+    
+  }
+  return ans;
 }
-return ans;
-  }
+
+int size(){
+  return adj.size();
+}
   
 };
+
 
 int main() 
 {
@@ -83,10 +97,19 @@ int main()
     cout << endl;
    g.printGraph();
    
-   vector<int> ans = g.BFSofGraph(3);
-   cout << "BFS:";
-   for(auto x:ans){
-     cout << x << " ";
-   }
+  vector<int> ans = g.graphBFS(1);
+  cout << "BFS:";
+  for(auto x:ans){
+    cout << x << " ";
+  }
+cout<<endl;
+  
+  vector<bool> visited(g.size(),0);
+  vector<int> ans1; 
+  g.graphDFS(1,ans1,visited);
+    cout << "DFS:";
+  for(auto x: ans1){
+    cout<< x << " ";
+  }
     return 0;
 }
